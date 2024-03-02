@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option Pricing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form action="/" method="post" id="option_form">
+        <h2>Option Pricing</h2>
+        <label for="option_type">Select Option Type:</label><br>
+        <select id="option_type" name="option_type" required>
+            <option value="manual_black_scholes">Manual Input - Black-Scholes</option>
+            <option value="manual_monte_carlo">Manual Input - Monte Carlo</option>
+            <option value="stock_name_black_scholes">Stock Name Input - Black-Scholes</option>
+            <option value="stock_name_monte_carlo">Stock Name Input - Monte Carlo</option>
+
+        </select><br><br>
+        <div id="manual_input_fields">
+            <label for="S">Current Stock Price:</label>
+            <input type="number" id="S" name="S" step="0.01" required><br>
+            <label for="K">Strike Price:</label>
+            <input type="number" id="K" name="K" step="0.01" required><br>
+            <label for="T">Time to Expiration (in years):</label>
+            <input type="number" id="T" name="T" step="0.01" required><br>
+            <label for="r">Risk-free Interest Rate:</label>
+            <input type="number" id="r" name="r" step="0.0001" required><br>
+            <label for="sigma">Volatility:</label>
+            <input type="number" id="sigma" name="sigma" step="0.0001" required><br>
+        </div>
+        <div id="stock_name_input_fields" style="display: none;">
+            <label for="stock_name">Stock Name:</label>
+            <input type="text" id="stock_name" name="stock_name"><br>
+            <label for="K_stock">Strike Price:</label>
+            <input type="number" id="K_stock" name="K_stock" step="0.01"><br>
+            <label for="T_stock">Time to Expiration (in years):</label>
+            <input type="number" id="T_stock" name="T_stock" step="0.01"><br>
+        </div>
+        <input type="submit" value="Calculate" id="calculate_button">
+    </form>
+    <script>
+        document.getElementById('option_type').addEventListener('change', function() {
+            var optionType = this.value;
+            var manualInputFields = document.getElementById('manual_input_fields');
+            var stockNameInputFields = document.getElementById('stock_name_input_fields');
+            var calculateButton = document.getElementById('calculate_button');
+
+            if (optionType === 'stock_name_black_scholes' || optionType === 'stock_name_monte_carlo') {
+                manualInputFields.style.display = 'none';
+                stockNameInputFields.style.display = 'block';
+                // Make manual input fields optional
+                document.getElementById('S').removeAttribute('required');
+                document.getElementById('K').removeAttribute('required');
+                document.getElementById('T').removeAttribute('required');
+                document.getElementById('r').removeAttribute('required');
+                document.getElementById('sigma').removeAttribute('required');
+            } else {
+                manualInputFields.style.display = 'block';
+                stockNameInputFields.style.display = 'none';
+                // Make stock name input fields optional
+                document.getElementById('stock_name').removeAttribute('required');
+                document.getElementById('K_stock').removeAttribute('required');
+                document.getElementById('T_stock').removeAttribute('required');
+            }
+        });
+    </script>
+</body>
+</html>
