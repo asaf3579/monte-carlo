@@ -102,15 +102,23 @@ def get_stock_info(stock_name, risk_free_rate):
 
 def get_risk_free_rate():
     try:
-        # Get the data for the 10-Year Treasury Yield (as an example)
+        # Get the data for the 10-Year Treasury Yield (^TNX)
         treasury_data = yf.Ticker("^TNX")
         # Get the current yield
-        current_yield = treasury_data.history(period='1d')['Close'].iloc[-1]
+        current_yield = treasury_data.history(period='1y')['Close'].iloc[-1]
 
         return current_yield / 100  # Convert percentage to decimal
-    except Exception as e:
-        print("Error:", e)
-        return None
+    except:
+        try:
+            # Get the data for the 1-Year Treasury Constant Maturity Rate (DGS1)
+            treasury_data = yf.Ticker("DGS1")
+            # Get the current yield
+            current_yield = treasury_data.history(period='1y')['Close'].iloc[-1]
+
+            return current_yield / 100  # Convert percentage to decimal
+        except Exception as e:
+            print("Error:", e)
+            return 0.05
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -143,6 +151,7 @@ def calculate_option_price():
             T = float(request.form['T_stock'])
 
             risk_free_rate = get_risk_free_rate()
+            print(risk_free_rate)
             stock_info = get_stock_info(stock_name, risk_free_rate)
             if stock_info:
                 S = stock_info['current_price']
@@ -158,6 +167,8 @@ def calculate_option_price():
             T = float(request.form['T_stock'])
 
             risk_free_rate = get_risk_free_rate()
+            print(risk_free_rate)
+
             stock_info = get_stock_info(stock_name, risk_free_rate)
             if stock_info:
                 S = stock_info['current_price']
@@ -173,4 +184,5 @@ def calculate_option_price():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host='0.0.0.0', port=8000)
